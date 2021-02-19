@@ -1,0 +1,32 @@
+class CheckClientLink(APIView):
+    def get(self, request):
+        print(request.query_params['l'])
+        print(request.query_params['c'])
+        print(request.query_params['m'])
+        get_client = CheckClientViewLink.objects.filter(my_id=request.query_params['m'],
+                                                        id_client=request.query_params['c'],
+                                                        link=request.query_params['l'])
+        if get_client:
+            data = dict(check=True)
+            return Response(True)
+        else:
+            CheckClientViewLink.objects.create(my_id=request.query_params['m'],
+                                               id_client=request.query_params['c'],
+                                               link=request.query_params['l'])
+            data = dict(check=False)
+            return Response(False)
+[11:35]
+модель:
+[11:35]
+class CheckClientViewLink(models.Model):
+    my_id = models.CharField('Id профиля бота', max_length=200)
+    id_client = models.CharField('Id клиента', max_length=255)
+    link = models.CharField('Ссылка которую клиент прислал', max_length=255)
+
+    class Meta:
+        verbose_name = 'Ссылка клиента которую обрабатывали'
+        verbose_name_plural = '2.Ссылки клиентов которые обрабатывали'
+[11:35]
+url
+[11:35]
+path('check_link/', CheckClientLink.as_view()),
